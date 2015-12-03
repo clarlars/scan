@@ -44,8 +44,19 @@ public class ScanUtils {
    public static final String appName = "tables";
    public static final boolean DebugMode = false;
 
+   // TODO: Remove this
    public static final String appFolder =
        Environment.getExternalStorageDirectory().getPath() + "/ODKScan/";
+
+   public static final String outputFolder = "scan_data";
+
+   public static final String capturedPhotoName = "photo.jpg";
+
+   public static final String alignedPhotoName = "aligned.jpg";
+
+   public static final String markedupPhotoName = "markedup.jpg";
+
+   public static final String outputJSONName = "output.json";
 
    public static final String extStorageDir = Environment.getExternalStorageDirectory()
        .getAbsolutePath();
@@ -103,32 +114,39 @@ public class ScanUtils {
    // unclear whether this is really an output folder or something else?
    // e.g., a scratch directory under data or system?
    public static String getOutputDirPath() {
-      return appFolder + "output/";
+      return ODKFileUtils.getDataFolder(appName) + File.separator + outputFolder;
    }
 
    public static String getOutputPath(String photoName) {
-      return getOutputDirPath() + photoName + "/";
+      return getOutputDirPath() + File.separator + photoName;
    }
 
    public static String getPhotoPath(String photoName) {
-      return getOutputPath(photoName) + "photo.jpg";
+      return getOutputPath(photoName) + File.separator + capturedPhotoName;
    }
 
    public static String getAlignedPhotoPath(String photoName) {
-      return getOutputPath(photoName) + "aligned.jpg";
+      return getOutputPath(photoName) + File.separator + alignedPhotoName;
    }
 
    public static String getJsonPath(String photoName) {
-      return getOutputPath(photoName) + "output.json";
+      return getOutputPath(photoName) + File.separator + outputJSONName;
    }
 
    public static String getMarkedupPhotoPath(String photoName) {
-      return getOutputPath(photoName) + "markedup.jpg";
+      return getOutputPath(photoName) + File.separator + markedupPhotoName;
    }
 
+   // TODO: Remove trailing slash
    public static String getTemplateDirPath() {
-      return appFolder + "form_templates/";
+      return appFolder + "form_templates" + File.separator;
    }
+
+   /*(
+   public static String getTemplateDirPath() {
+      return ODKFileUtils.getConfigFolder(appName) + "scan_form_templates";
+   }
+   */
 
    public static String getTrainingExampleDirPath() {
       return appFolder + "training_examples/";
@@ -199,7 +217,7 @@ public class ScanUtils {
     */
    public static String getTemplatePath(String photoName) throws Exception {
       if (new File(getOutputPath(photoName)).exists()) {
-         String templateValueFile = getOutputPath(photoName) + "template";
+         String templateValueFile = getOutputPath(photoName) + File.separator +  "template";
          if (new File(templateValueFile).exists()) {
             try {
                return readFileAsString(templateValueFile);
@@ -220,7 +238,7 @@ public class ScanUtils {
     * @deprecated
     */
    public static void setTemplatePath(String photoName, String templatePath) throws IOException {
-      String templateValueFile = getOutputPath(photoName) + "template";
+      String templateValueFile = getOutputPath(photoName) + File.separator + "template";
       if (new File(templateValueFile).createNewFile()) {
          BufferedWriter out = new BufferedWriter(new FileWriter(templateValueFile));
          out.write(templatePath);
