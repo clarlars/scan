@@ -17,16 +17,18 @@ package org.opendatakit.scan.android.activities;
 import java.io.File;
 import java.util.Set;
 
+import android.app.*;
 import android.graphics.Color;
 import android.os.*;
 import android.text.Html;
 import org.opendatakit.common.android.activities.BaseActivity;
+import org.opendatakit.common.android.utilities.ODKFileUtils;
 import org.opendatakit.scan.android.R;
+import org.opendatakit.scan.android.application.Scan;
+import org.opendatakit.scan.android.fragments.InitializationFragment;
 import org.opendatakit.scan.android.tasks.RunSetup;
 import org.opendatakit.scan.android.utils.ScanUtils;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,15 +43,16 @@ public class MainMenuActivity extends BaseActivity {
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+
+      //android.os.Debug.waitForDebugger();
       setContentView(R.layout.main_menu); // Setup the UI
 
       SharedPreferences settings = PreferenceManager
           .getDefaultSharedPreferences(getApplicationContext());
 
       try {
-         // Create the app folder if it doesn't exist:
-         new File(ScanUtils.appFolder).mkdirs();
-         checkSDCard();
+
+         //checkSDCard();
          PackageInfo packInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
          {
             // dynamically construct the main screen version string
@@ -60,6 +63,7 @@ public class MainMenuActivity extends BaseActivity {
          int storedVersionCode = settings.getInt("version", 0);
          int appVersionCode = packInfo.versionCode;
          if (appVersionCode == 0 || storedVersionCode < appVersionCode) {
+            /*
             final ProgressDialog pd = ProgressDialog
                 .show(this, "Please wait...", "Extracting assets", true);
 
@@ -70,8 +74,13 @@ public class MainMenuActivity extends BaseActivity {
                   return true;
                }
             });
+            */
 
-            AsyncTask.execute(new RunSetup(handler, settings, getAssets(), appVersionCode));
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("version", appVersionCode);
+            editor.commit();
+            //AsyncTask.execute(new RunSetup(handler, settings, getAssets(), appVersionCode));
+
          }
       } catch (Exception e) {
          // Display an error dialog if something goes wrong.
@@ -87,8 +96,25 @@ public class MainMenuActivity extends BaseActivity {
          alert.show();
       }
 
+      // Ensuring ODK directories exist
+      ODKFileUtils.verifyExternalStorageAvailability();
+      ODKFileUtils.assertDirectoryStructure(ScanUtils.getODKAppName());
+
+      FragmentManager fragmentManager = getFragmentManager();
+      FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+      Fragment initFragment = new InitializationFragment();
+      fragmentTransaction.add(R.id.fragment_container, initFragment).commit();
+
+      /*
+      if (Scan.getInstance().shouldRunInitializationTask(getAppName())) {
+         Scan.getInstance().clearRunInitializationTask(getAppName());
+      }
+      */
+
       hookupButtonHandlers();
       updateTemplateText();
+
    }
 
    private void hookupButtonHandlers() {
@@ -158,7 +184,7 @@ public class MainMenuActivity extends BaseActivity {
          // We can read and write the media
          // Now Check that there is room to store more images
          final int APROX_IMAGE_SIZE = 1000000;
-         long usableSpace = ScanUtils.getUsableSpace(ScanUtils.appFolder);
+         long usableSpace = ScanUtils.getUsableSpace(ScanUtils.getOutputDirPath());
          if (usableSpace >= 0 && usableSpace < 4 * APROX_IMAGE_SIZE) {
             throw new Exception("It looks like there isn't enough space to store more images.");
          }

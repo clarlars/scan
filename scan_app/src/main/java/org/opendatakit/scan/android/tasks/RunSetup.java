@@ -24,6 +24,7 @@ import android.content.res.AssetManager;
 import android.os.Handler;
 import android.util.Log;
 
+import org.opendatakit.common.android.utilities.ODKFileUtils;
 import org.opendatakit.scan.android.utils.ScanUtils;
 
 /**
@@ -50,35 +51,7 @@ public class RunSetup implements Runnable {
 
    public void run() {
 
-      SharedPreferences.Editor editor = settings.edit();
 
-      // Create output dir if it doesn't exist
-      new File(ScanUtils.getOutputDirPath()).mkdirs();
-
-      try {
-         //Creates a .nomedia file to prevent the images from showing up in the gallery.
-         new File(ScanUtils.appFolder + ".nomedia").createNewFile();
-
-         File trainingExamplesDir = new File(ScanUtils.getTrainingExampleDirPath());
-         File formTemplatesDir = new File(ScanUtils.getTemplateDirPath());
-
-         //TODO: When new examples/templates are added to the assets dir they should be added here as well.
-         //It would be nice to automatically delete examples/templates in the assets dir.
-         rmdir(new File(trainingExamplesDir, "bubbles"));
-         rmdir(new File(trainingExamplesDir, "squre_checkboxes"));
-         rmdir(new File(formTemplatesDir, "example"));
-         rmdir(new File(ScanUtils.getFormViewHTMLDir()));
-
-         extractAssets(new File(""), new File(ScanUtils.appFolder));
-
-         editor.putInt("version", appVersionCode);
-
-      } catch (IOException e) {
-         // TODO: Terminate the app if this fails.
-         e.printStackTrace();
-         Log.i(LOG_TAG, "Extration Error");
-      }
-      editor.commit();
       handler.sendEmptyMessage(0);
    }
 
@@ -88,12 +61,15 @@ public class RunSetup implements Runnable {
     * @param assetsDir
     * @param outputDir
     * @throws IOException
-    */
+    *
+   // TODO: This should all be happening in android common
    protected void extractAssets(File assetsDir, File outputDir) throws IOException {
 
       outputDir.mkdirs();
       String[] assetNames = assets.list(assetsDir.toString());
       for (int i = 0; i < assetNames.length; i++) {
+
+         // TODO:
 
          File nextAssetsDir = new File(assetsDir, assetNames[i]);
          File nextOutputDir = new File(outputDir, assetNames[i]);
@@ -105,6 +81,7 @@ public class RunSetup implements Runnable {
          }
       }
    }
+   */
 
    /**
     * Copy a single asset file to the specified directory.
@@ -112,7 +89,7 @@ public class RunSetup implements Runnable {
     * @param assetDir
     * @param outputDir
     * @throws IOException
-    */
+    *
    protected void copyAsset(File assetDir, File outputDir) throws IOException {
 
       Log.i(LOG_TAG, "Copying " + assetDir + " to " + outputDir.toString());
@@ -131,7 +108,7 @@ public class RunSetup implements Runnable {
 
       fos.close();
       fis.close();
-   }
+   }*/
 
    /**
     * Recursively remove all the files in a directory, then the directory.

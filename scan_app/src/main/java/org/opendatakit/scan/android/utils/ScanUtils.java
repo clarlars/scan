@@ -42,11 +42,14 @@ public class ScanUtils {
    }
 
    public static final String appName = "tables";
+
+   public static final String odk_file_system_sub_path = "scan";
+
    public static final boolean DebugMode = false;
 
    // TODO: Remove this
-   public static final String appFolder =
-       Environment.getExternalStorageDirectory().getPath() + "/ODKScan/";
+   //public static final String appFolder =
+       //Environment.getExternalStorageDirectory().getPath() + "/ODKScan/";
 
    public static final String outputFolder = "scan_data";
 
@@ -58,6 +61,18 @@ public class ScanUtils {
 
    public static final String outputJSONName = "output.json";
 
+   public static final String templateDirName = "form_templates";
+
+   public static final String trainingExampleDirName = "training_examples";
+
+   public static final String trainingModelDirName = "training_models";
+
+   public static final String numberModule = "mlp_all_classes.txt";
+
+   public static final String calibName = "camera.yml";
+
+   public static final String formViewHTMLDir = "transcription";
+
    public static final String extStorageDir = Environment.getExternalStorageDirectory()
        .getAbsolutePath();
 
@@ -68,6 +83,14 @@ public class ScanUtils {
    // TODO: remove trailing slash
    public static String getAppFormDirPath(String formId) {
       return ODKFileUtils.getFormFolder(appName, formId, formId) + File.separator;
+   }
+
+   public static String getConfigPath() {
+      return ODKFileUtils.getConfigFolder(appName) + File.separator + odk_file_system_sub_path;
+   }
+
+   public static String getSystemPath() {
+      return ODKFileUtils.getSystemFolder(appName) + File.separator + odk_file_system_sub_path;
    }
 
    // TODO: remove trailing slash
@@ -139,33 +162,41 @@ public class ScanUtils {
 
    // TODO: Remove trailing slash
    public static String getTemplateDirPath() {
-      return appFolder + "form_templates" + File.separator;
+      // TODO:
+      //return appFolder + "config/form_templates" + File.separator;
+      return getConfigPath() + File.separator + templateDirName + File.separator;
    }
 
-   /*(
-   public static String getTemplateDirPath() {
-      return ODKFileUtils.getConfigFolder(appName) + "scan_form_templates";
-   }
-   */
-
+   // TODO: Remove trailing slash
    public static String getTrainingExampleDirPath() {
-      return appFolder + "training_examples/";
+      // TODO:
+      //return appFolder + "system/training_examples/";
+      return getSystemPath() + File.separator + trainingExampleDirName + File.separator;
    }
 
    public static String getCalibPath() {
-      return appFolder + "camera.yml";
+      // TODO:
+      //return appFolder + "camera.yml";
+      return getSystemPath() + File.separator + calibName;
    }
 
+   // TODO: Remove trailing slash
    public static String getFormViewHTMLDir() {
-      return appFolder + "transcription/";
+      // TODO:
+      //return appFolder + "transcription/";
+      return getSystemPath() + File.separator + formViewHTMLDir + File.separator;
    }
 
+   // TODO: Remove trailing slash
    public static String getTrainedModelDir(String classifier) {
-      return appFolder + "training_models/" + classifier + "/";
+      return getSystemPath() + File.separator + trainingModelDirName + File.separator + classifier
+          + File.separator;
    }
 
    public static String getNumberClassifierModel() {
-      return getTrainedModelDir("numbers") + "mlp_all_classes.txt";
+      // TODO:
+      //return getTrainedModelDir("numbers") + "mlp_all_classes.txt";
+      return getTrainedModelDir("numbers") + numberModule;
    }
 
    public static void displayImageInWebView(WebView myWebView, String imagePath) {
