@@ -117,7 +117,7 @@ Json::Value computeFieldValue(const Json::Value& field){
 					Json::Value gridValues = field["grid_values"];
 					if (!gridValues.isNull() && j < gridValues.size()) {
 						itemValue = gridValues[j];
-						LOGI("Using grid values!!");
+						//LOGI("Using grid values!!");
 					}
 				}
 			}
@@ -208,7 +208,7 @@ Json::Value computeFieldValue(const Json::Value& field){
 //Generate a marked up version of the form image that shows classifications and values.
 Mat markupForm(const Json::Value& bvRoot, const Mat& inputImage, bool drawCounts)
 {
-	LOGI("Mark up form");
+	//LOGI("Mark up form");
 
 	Mat markupImage;
 	cvtColor(inputImage, markupImage, CV_GRAY2RGB);
@@ -271,7 +271,7 @@ Mat markupForm(const Json::Value& bvRoot, const Mat& inputImage, bool drawCounts
 						FONT_HERSHEY_SIMPLEX, 0.8, boxColor, 2, CV_AA);
 				}
 				else{
-					LOGI("Don't know what this is.");
+					//LOGI("Don't know what this is.");
 				}
 			}
 		}
@@ -296,7 +296,7 @@ Mat markupForm(const Json::Value& bvRoot, const Mat& inputImage, bool drawCounts
 			        FONT_HERSHEY_SIMPLEX, 0.8, boxColor, 2, CV_AA);
 		}
 	}
-	LOGI("Done with markup");
+	//LOGI("Done with markup");
 	return markupImage;
 }
 //deprecated
@@ -432,7 +432,7 @@ Ptr<PCA_classifier>& getClassifier(const Json::Value& classifier) {
 				                                               advanced.get("eigenvalues", 9).asInt(),
 			                                                       advanced.get("flip_training_data", true).asBool());
 			if( !success ) {
-				LOGI("\n\nCould not train classifier.\n\n");
+				//LOGI("\n\nCould not train classifier.\n\n");
 				return classifiers[key];
 			}
 
@@ -543,7 +543,7 @@ Json::Value segmentFunction(Json::Value& segmentJsonOut, const Json::Value& exte
 		//DO NUMBER CLASSIFICATION
 		if (classifierJson.get("training_data_uri", 0) == "numbers")
 		{
-			LOGI("Classifying numbers");
+			//LOGI("Classifying numbers");
 
 			//HARDCODING SIZE OF NUMBERS FOR NOW!!!!
 			int classifier_height = 28;
@@ -583,11 +583,11 @@ Json::Value segmentFunction(Json::Value& segmentJsonOut, const Json::Value& exte
 
 				itemsJsonOut.append(itemJsonOut);
 			}
-			LOGI("Finished classifying numbers");
+			//LOGI("Finished classifying numbers");
 		}
 		else //DO BUBBLE AND CHECKBOX CLASSIFICATION
 		{
-			LOGI("Classifying bubbles and checkboxes");
+			//LOGI("Classifying bubbles and checkboxes");
 
 			Ptr<PCA_classifier> classifier = getClassifier(classifierJson);
 			vector<Point> locations;
@@ -643,7 +643,7 @@ Json::Value segmentFunction(Json::Value& segmentJsonOut, const Json::Value& exte
 
 	//Classification for QR codes
 	else if(extendedSegment.get("type", 0) == "qrcode"){
-		LOGI("scanning qr code...");
+		//LOGI("scanning qr code...");
 		
 		//Blowing up the image can make decoding work sometimes,
 		//but making it too big can also break it. AFAICT 2x is optimal.
@@ -713,7 +713,7 @@ Json::Value segmentFunction(Json::Value& segmentJsonOut, const Json::Value& exte
 		segmentJsonOut["image_path"] = segmentOutPath + segmentName;
 	}
 	catch(...){
-		LOGI("Could not output segment to: %s + %s", segmentOutPath.c_str(), segmentName.c_str());
+		//LOGI("Could not output segment to: %s + %s", segmentOutPath.c_str(), segmentName.c_str());
 	}
 
 	return segmentJsonOut;
@@ -745,7 +745,7 @@ Json::Value fieldFunction(const Json::Value& field, const Json::Value& parentPro
 		if(!segmentJsonOut.isNull()){
 			outSegments.append(segmentJsonOut);
 		} else {
-			LOGI("segmentJsonOut is null!");
+			//LOGI("segmentJsonOut is null!");
 		}
 	}
 	outField["segments"] = outSegments;
@@ -778,7 +778,7 @@ Json::Value formFunction(const Json::Value& templateRoot){
 	outForm["templatePath"] = templPath;
 	outForm.removeMember("items");
 	outForm.removeMember("classifier");
-	LOGI("Done with classification");
+	//LOGI("Done with classification");
 	return outForm;
 }
 
@@ -799,7 +799,7 @@ bool setTemplate(const char* templatePathArg) {
 
 bool loadFormImage(const char* imagePath, const char* calibrationFilePath) {
 	#ifdef DEBUG_PROCESSOR
-		LOGI("loading form image...");
+		//LOGI("loading form image...");
 		cout << flush;
 	#endif
 	#ifdef TIME_IT	
@@ -846,10 +846,10 @@ bool loadFormImage(const char* imagePath, const char* calibrationFilePath) {
 	imageDir = path.substr(0, path.find_last_of("/") + 1);
 */	
 	#ifdef TIME_IT
-		LOGI("LoadFormImage time: ");
+		//LOGI("LoadFormImage time: ");
 		ostringstream ss;
 		ss << (double)(clock()-init) / ((double)CLOCKS_PER_SEC);
-		LOGI( ss.str().c_str() );
+		//LOGI( ss.str().c_str() );
 	#endif
 	#ifdef DEBUG_PROCESSOR
 		cout << "loaded" << endl;
@@ -859,7 +859,7 @@ bool loadFormImage(const char* imagePath, const char* calibrationFilePath) {
 
 bool alignForm(const char* alignedImageOutputPath, size_t formIdx) {
 	#ifdef DEBUG_PROCESSOR
-		LOGI("aligning form...");
+		//LOGI("aligning form...");
 		cout << endl;
 	#endif
 	#ifdef TIME_IT	
@@ -887,10 +887,10 @@ bool alignForm(const char* alignedImageOutputPath, size_t formIdx) {
 	//JsonOutput["aligned_image_path"] = alignedImageOutputPath;
 
 	#ifdef TIME_IT
-		LOGI("alignForm time: ");
+		//LOGI("alignForm time: ");
 		ostringstream ss;
 		ss << (double)(clock()-init) / ((double)CLOCKS_PER_SEC);
-		LOGI( ss.str().c_str() );
+		//LOGI( ss.str().c_str() );
 	#endif
 	#ifdef DEBUG_PROCESSOR
 		cout << "aligned" << endl;
@@ -900,7 +900,7 @@ bool alignForm(const char* alignedImageOutputPath, size_t formIdx) {
 
 bool processForm(const string& outputPath, const string& jsonOutputPath, const string& markedupImagePath, bool minifyJson) {
 	#ifdef  DEBUG_PROCESSOR
-		LOGI("Processing form");
+		//LOGI("Processing form");
 		cout << endl;
 	#endif
 	#ifdef TIME_IT	
@@ -941,10 +941,10 @@ bool processForm(const string& outputPath, const string& jsonOutputPath, const s
 
 
 	#ifdef TIME_IT
-		LOGI("Process time: ");
+		//LOGI("Process time: ");
 		ostringstream ss;
 		ss << (double)(clock()-init) / ((double)CLOCKS_PER_SEC);
-		LOGI( ss.str().c_str() );
+		//LOGI( ss.str().c_str() );
 	#endif
 	return true;
 }
@@ -970,12 +970,12 @@ bool loadFeatureData(const char* templatePathArg) {
 int detectForm(){
 	int formIdx;
 	try{
-		LOGI("Detecting form...");
+		//LOGI("Detecting form...");
 		aligner.setImage(formImage);
 		formIdx = (int)aligner.detectForm();
 	}
 	catch(cv::Exception& e){
-		LOGI("%s", e.what());
+		//LOGI("%s", e.what());
 		return -1;
 	}
 	return formIdx;
@@ -988,13 +988,13 @@ int detectForm(){
 Processor::Processor() : processorImpl(new ProcessorImpl()){
 	processorImpl->trainingDataPath = "training_examples/";
   processorImpl->trainingModelPath = "training_models/";
-	LOGI("Processor successfully constructed.");
+	//LOGI("Processor successfully constructed.");
 }
 
 Processor::Processor(const char* appRootDir) : processorImpl(new ProcessorImpl()){
 	processorImpl->trainingDataPath = addSlashIfNeeded(appRootDir) + "training_examples/";
   processorImpl->trainingModelPath = addSlashIfNeeded(appRootDir) + "training_models/";
-	LOGI("Processor successfully constructed.");
+	//LOGI("Processor successfully constructed.");
 }
 
 bool Processor::loadFormImage(const char* imagePath, const char* calibrationFilePath){
@@ -1006,7 +1006,7 @@ bool Processor::loadFeatureData(const char* templatePath){
 		return processorImpl->loadFeatureData(templatePath);
 	}
 	catch(cv::Exception& e){
-		LOGI("%s", e.what());
+		//LOGI("%s", e.what());
 		return false;
 	}
 }

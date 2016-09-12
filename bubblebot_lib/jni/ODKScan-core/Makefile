@@ -35,14 +35,21 @@ endif
 ifndef DEBUG
 CFLAGS := \
 -D DEBUG_PROCESSOR\
--D DEBUG_ALIGN_IMAGE
+-D DEBUG_ALIGN_IMAGE\
+-stdlib=libc++
 endif
 
 #The OPENCV_INCLUDES will probably need to be adjusted if you aren't running this on a linux system.
 #Even then, pkg-config might not be set up.
 #Also, you might need to add this to your .bashrc
 #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-OPENCV_INCLUDES := `pkg-config opencv --cflags --libs`
+OPENCV_INCLUDES := `pkg-config opencv --cflags --libs`\
+-liconv
+#OPENCV_INCLUDES := -I/usr/local/include/opencv\
+#-I/usr/local/include\
+#-L/usr/local/lib\
+#-L/usr/local/share/OpenCV/3rdparty/lib
+
 
 INCLUDES := $(OPENCV_INCLUDES)\
 -I./jsoncpp-src-0.5.0/include\

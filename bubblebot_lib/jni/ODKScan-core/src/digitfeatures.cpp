@@ -135,7 +135,7 @@ void gradient_directional(Mat gray_unscaled, vector<double>& feature_vector)
 			int grad_x = (int) map_x.at<short>(i, j);
 			int grad_y = (int) map_y.at<short>(i, j);
 
-			if(sqrt(pow(grad_x, 2) + pow(grad_y, 2)) > grad_thresh)
+			if(sqrt(pow(static_cast<double>(grad_x), 2) + pow(static_cast<double>(grad_y), 2)) > grad_thresh)
 			{
 				normalizers[i / 30][j / 20] += 1;
 			}
@@ -149,7 +149,7 @@ void gradient_directional(Mat gray_unscaled, vector<double>& feature_vector)
 			int grad_x = (int) map_x.at<short>(i, j);
 			int grad_y = (int) map_y.at<short>(i, j);
 
-			if(sqrt(pow(grad_x, 2) + pow(grad_y, 2)) > grad_thresh)
+			if(sqrt(pow(static_cast<double>(grad_x), 2) + pow(static_cast<double>(grad_y), 2)) > grad_thresh)
 			{
 				double direction = atan2(grad_y, grad_x);
 

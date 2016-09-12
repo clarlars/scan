@@ -1,7 +1,7 @@
 #ifndef PROCESSOR_H
 #define PROCESSOR_H
 #include "configuration.h"
-#include <tr1/memory>
+#include <memory>
 #include <string>
 
 class Processor{
@@ -26,7 +26,7 @@ class Processor{
 		const std::string jniEchoTest(const char* str) const;
 	private:
 		class ProcessorImpl;
-    		std::tr1::shared_ptr<ProcessorImpl> processorImpl;
+    		std::shared_ptr<ProcessorImpl> processorImpl;
 };
 
 
