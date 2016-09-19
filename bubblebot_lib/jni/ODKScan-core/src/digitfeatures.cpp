@@ -9,14 +9,14 @@ void set_extraction_alg(int extraction_alg)
 	EXTRACTION_ALG = extraction_alg;
 }
 
-void get_data(Mat src, vector<double>& features)
+void get_data(Mat &src, vector<double>& features)
 {
-	Mat binary_image = binary_processed_image(src);
+	binary_processed_image(src);
 
 	features.resize(0);
 
 	features.resize(280, 0);
-	structural_characteristics(binary_image, features);
+	structural_characteristics(src, features);
 }
 
 void split_data_set(vector<vector<double> >& features, vector<int>& targets, vector<vector<double> >& encoded_targets, vector<Mat>& images, vector<string>& image_names,
@@ -325,45 +325,37 @@ void structural_characteristics(Mat binary_unscaled, vector<double>& feature_vec
 	return;
 }
 
-Mat binary_processed_image(Mat& src)
+void binary_processed_image(Mat& src)
 {
-  Mat dst = src;
 	//cvtColor(src, dst, CV_RGB2GRAY, 1);
 
-	threshold(dst, dst, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
-
-	bitwise_not(dst, dst);
+	threshold(src, src, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
+	bitwise_not(src, src);
 
 	if(BINARY_REMOVE_DOTS)
 	{
-		remove_dots(dst, 5);
+		remove_dots(src, 5);
 	}
 
-	Mat cropped;
 	if(BINARY_AUTOCROP)
 	{
-		Rect bound_box = bounding_box(dst);
-		dst(bound_box).copyTo(cropped);
-	}
-	else
-	{
-		cropped = dst;
+		Rect bound_box = bounding_box(src);
+		src = src(bound_box);
 	}
 
 	if(BINARY_REMOVE_BORDERS)
 	{
-		remove_top_border(cropped);
-		remove_bottom_border(cropped);
-		remove_left_border(cropped);
-		remove_right_border(cropped);
-		remove_dots(cropped, 3);
+		remove_top_border(src);
+		remove_bottom_border(src);
+		remove_left_border(src);
+		remove_right_border(src);
+		remove_dots(src, 3);
 	}
 
-	Mat eroded;
-	bitwise_not(cropped, eroded);
+	bitwise_not(src, src);
 
-	if(BINARY_THIN)
-	{
+// 	if(BINARY_THIN)
+// 	{
 //		Mat thinner;
 //		thinner = getStructuringElement(MORPH_RECT, Size(7, 7));
 //		erode(eroded, eroded, thinner);
@@ -373,9 +365,8 @@ Mat binary_processed_image(Mat& src)
 //		thinner = getStructuringElement(MORPH_RECT, Size(3, 3));
 //		dilate(eroded, eroded, thinner2);
 //		erode(eroded, eroded, thinner2);
-	}
+// 	}
 
-	return eroded;
 }
 
 Rect bounding_box(Mat image)
